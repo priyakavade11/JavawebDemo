@@ -1,14 +1,18 @@
+
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="60 seconds">
+    <!-- Azure App Service LogFiles directory -->
     <property name="LOG_PATH" value="/home/LogFiles"/>
     <property name="APP_NAME" value="slf4j-logback-azure"/>
 
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <!-- Single console appender captured by Azure App Service (stdout/stderr) -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
+    <!-- Optional: rolling file appender (requires WEBSITES_ENABLE_APP_SERVICE_STORAGE=true) -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_PATH}/${APP_NAME}.log</file>
         <append>true</append>
@@ -23,13 +27,15 @@
         </rollingPolicy>
     </appender>
 
+    <!-- Optional: make your application package explicit -->
     <logger name="com.example" level="DEBUG" additivity="false">
-        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
     </logger>
 
-    <root level="INFO">
-        <appender-ref ref="STDOUT"/>
+    <!-- One root logger only -->
+    <root level="DEBUG">
+        <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
     </root>
 </configuration>
